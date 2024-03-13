@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.cejv416.financecalculatorjavafx.presentation;
 
 import com.cejv416.financecalculatorjavafx.calculator.FinanceCalculations;
@@ -27,57 +23,110 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 /**
+ * This is the user interface for the application. It is broken down into
+ * methods that create the components of the UI and the corresponding event
+ * handlers
  *
- * @author omniprof
+ * @author Ken Fogel
  */
 public class FinancePane extends BorderPane {
 
-    private final FinanceBean fb;
-    private final FinanceCalculations fc;
-    private TextArea textArea;
+    private final FinanceBean financeBean;
+    private final FinanceCalculations calculator;
 
+    // This JavaFX control holds text. It will add scroll bars if the 
+    // text does not fit the size of the area
+    private final TextArea textArea;
+
+    // These are the input field controls
     private TextField amountValue;
     private TextField rateValue;
     private TextField termValue;
     private TextField resultValue;
+
+    // These are two labels that change depending on the calculation you choose.
     private Label amountLabel;
     private Label title;
 
+    // The calculation as determined by the menu choise
     private int calculationType;
 
-    public FinancePane(FinanceBean fb, FinanceCalculations fc) {
-        this.fb = fb;
-        this.fc = fc;
+    /**
+     * The constructor that receives the references from the
+     * FinancialCalculatorMain object as well is instantiating the TextArea and
+     * setting the initial value for the calculationType
+     *
+     * @param financeBean
+     * @param calculator
+     */
+    public FinancePane(FinanceBean financeBean, FinanceCalculations calculator) {
+        this.financeBean = financeBean;
+        this.calculator = calculator;
         textArea = new TextArea();
         calculationType = 0;
     }
 
+    /**
+     * This is method that carries out the initialization of the UI.
+     *
+     * @param primaryStage
+     */
     public void start(Stage primaryStage) {
 
         setTop(buildMenuBar());
         setCenter(buildForm());
         setBottom(buildTextArea());
 
+        /* While a primaryStage is the window, controls and containers are 
+        placed into a Scene. As this class extends the BorderPane we use the 
+        this reference to mean that this class is the container of controls in 
+        this Scene */
         Scene scene = new Scene(this, 600, 600);
 
+        // Give the window a title, put the Scene in the window, and show the window
         primaryStage.setTitle("Calculations");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
+    // The build methods are used to construct the different components of the UI
+    /**
+     * This is the TextArea found at the bottom of the Scene that contains a
+     * line of text for every calculation performed
+     *
+     * @return The configured TextArea
+     */
     private TextArea buildTextArea() {
         textArea.setWrapText(true);
+        textArea.setEditable(false);
         textArea.setPrefSize(650, 150);
         textArea.setStyle("-fx-font-size:14pt");
         return textArea;
     }
 
+    /**
+     * This constructs the menu system consisting of Menu, such as File,
+     * MenuItems that are displayed when a Menu is selected, and a Menu Bar that
+     * contains Menu and Menu Items and can be placed anywhere in a pane though
+     * the top of a pane is the usual location.
+     *
+     * @return The initialized MenuBar
+     */
     private MenuBar buildMenuBar() {
-        // create a menu 
-        Menu file = new Menu("File");
-        MenuItem exit = new MenuItem("Exit");
 
+        // The File menu
+        Menu file = new Menu("File");
+        // The Menu Item
+        MenuItem exit = new MenuItem("Exit");
+        // The event that occurs if this item is selected
+        exit.setOnAction(event -> {
+            Platform.exit();
+        });
+
+        // The Calculations menu
         Menu calculations = new Menu("Calculations");
+
+        // These are the items in the Calculation Menu and their corresponding event handler
         MenuItem loan = new MenuItem("Loan Payment");
         loan.setOnAction(event -> {
             calculationType = 0;
@@ -100,20 +149,17 @@ public class FinancePane extends BorderPane {
             amountLabel.setText("Goal Amount");
         });
 
-        // add menu items to menu 
+        // Add the Menu Items to their Menu 
         file.getItems().add(exit);
-        file.setOnAction(event -> {
-            Platform.exit();
-        });
         calculations.getItems().add(loan);
         calculations.getItems().add(savings);
         calculations.getItems().add(future);
 
-        // create a menubar 
+        // Create the MenuBar
         MenuBar menuBar = new MenuBar();
         menuBar.setStyle("-fx-font-size:14pt");
 
-        // add menu to menubar 
+        // Add the Menus to the MenuBar 
         menuBar.getMenus().add(file);
         menuBar.getMenus().add(calculations);
 
@@ -121,10 +167,10 @@ public class FinancePane extends BorderPane {
     }
 
     /**
-     * This method creates a Label that is centered inside an HBox.
+     * This method creates a Label that is centered inside an HBox. The text of
+     * this title label can be changed depending on the menu item selection
      *
-     * @param text
-     * @return
+     * @return A horizontal box that contains the label centered within
      */
     private HBox createTitle() {
         title = new Label("Loan Calculations"); // default
@@ -133,7 +179,7 @@ public class FinancePane extends BorderPane {
         // Possible fonts can be found at http://www.webdesigndev.com/16-gorgeous-web-safe-fonts-to-use-with-css/
         title.setStyle("-fx-font-size:18pt");
 
-        // To center the title and give it padding create an HBox, set the
+        // To center the title and give it padding, create an HBox, set the
         // padding and alignment, add the label and then add the HBox to the BorderPane.
         HBox hbox = new HBox();
         hbox.getChildren().add(title);
@@ -144,18 +190,20 @@ public class FinancePane extends BorderPane {
     }
 
     /**
-     * This method creates a BorderPane that has a title in the top and a
-     * GridPane in the center. The GridPane contains a form.
+     * A BorderPane has 5 areas into which a container or control can be placed.
+     * This application only used the top, center, and bottom areas. This method
+     * creates a BorderPane that has a title in the top and a GridPane form in
+     * the center and a TextArea in the bottom.
      *
      * @return The BorderPane to add to the Scene
      */
     private BorderPane buildForm() {
 
         // Create the pane that will hold the controls
-        BorderPane loanPane = new BorderPane();
+        BorderPane formPane = new BorderPane();
 
         // Add a Title
-        loanPane.setTop(createTitle());
+        formPane.setTop(createTitle());
 
         // Craete an empty GridPane
         GridPane loanGrid = new GridPane();
@@ -210,7 +258,8 @@ public class FinancePane extends BorderPane {
         calculate.setStyle("-fx-font-size:14pt");
         calculate.setOnAction(this::calculateButtonHandler);
 
-        // HBox that will span 2 columns so thatbutton can be centered across the GridPane
+        // HBox that will span 2 columns so that the button can be centered 
+        // across the GridPane
         HBox hbox = new HBox();
         hbox.getChildren().add(calculate);
         hbox.setAlignment(Pos.CENTER);
@@ -223,83 +272,91 @@ public class FinancePane extends BorderPane {
         ColumnConstraints col2 = new ColumnConstraints();
         col2.setPercentWidth(70.0);
 
+        // Add the constriants to the the GridPane
         loanGrid.getColumnConstraints().addAll(col1, col2);
 
         // Add space around the outside of the GridPane
         loanGrid.setPadding(new Insets(20.0));
+
         // Add space between rows and columns of the GridPane
         loanGrid.setHgap(10.0);
         loanGrid.setVgap(10.0);
 
         // Load the GridPane into the pane
-        loanPane.setCenter(loanGrid);
+        formPane.setCenter(loanGrid);
 
-        return loanPane;
+        return formPane;
     }
 
     /**
-     * This is the event handler when the button is being pressed. If there is a
-     * NumberFormatException when any of the fields is converted to a BigDecimal
-     * then an Alert box is displayed
+     * This is the event handler when the button is being pressed. If the string
+     * entered by the user cannot be converted to a BigDecimal then the
+     * NumberFormatException is thrown. We catch it and show a popup box
+     * informing us that we made a mistake and then it clears the TextField.
      *
-     * There is a better way to handle strings that cannot convert and you will
-     * learn how in the Java Desktop course.
-     *
-     * @param e
+     * @param e We do not use the ActionEvent object so we give it a single
+     * letter name.
      */
     private void calculateButtonHandler(ActionEvent e) {
         boolean doCalculation = true;
         try {
-            fb.setInputValue(new BigDecimal(amountValue.getText()));
+            financeBean.setInputValue(new BigDecimal(amountValue.getText()));
         } catch (NumberFormatException nfe) {
             doCalculation = false;
             numberFormatAlert(amountValue.getText(), "Loan");
             amountValue.setText("");
         }
         try {
-            fb.setRate(new BigDecimal(rateValue.getText()));
+            financeBean.setRate(new BigDecimal(rateValue.getText()));
         } catch (NumberFormatException nfe) {
             doCalculation = false;
             numberFormatAlert(rateValue.getText(), "Rate");
             rateValue.setText("");
         }
         try {
-            fb.setTerm(new BigDecimal(termValue.getText()));
+            financeBean.setTerm(new BigDecimal(termValue.getText()));
         } catch (NumberFormatException nfe) {
             doCalculation = false;
             numberFormatAlert(termValue.getText(), "Term");
             termValue.setText("");
         }
 
+        /* If there were no errors converting the Strings then the appropriate 
+        calculation is called upon to generate the result. The result is then 
+        displayed. */
         if (doCalculation == true) {
             switch (calculationType) {
                 case 0 ->
-                    fc.loanCalculation(fb);
+                    calculator.loanCalculation(financeBean);
                 case 1 ->
-                    fc.futureValueCalculation(fb);
+                    calculator.futureValueCalculation(financeBean);
                 case 2 ->
-                    fc.savingsGoalCalculation(fb);
+                    calculator.savingsGoalCalculation(financeBean);
             }
-            resultValue.setText(fb.getResult().toString());
+            resultValue.setText(financeBean.getResult().toString());
+            // A string with the result is created and appended to the TextArea
             textArea.appendText(buildStringResult());
-
+            // Scroll to the bottom of the TextArea 
+            textArea.positionCaret(textArea.getText().length());
         }
     }
-    
+
+    /**
+     * The string with the result destined for the TextArea is created here
+     *
+     * @return The string to display
+     */
     private String buildStringResult() {
-        
+
         String resultString = "";
-            switch (calculationType) {
-                case 0 ->
-                    //resultString = "Loan: Borrow " + fb.getInputValue() + " at an interest rate of " + fb.getRate() + " for a period of " + fb.getTerm() + " will require payments of " + fb.getResult() + " monthly\n";
-                    resultString = String.format("Loan: If you borrow $%s at an interest rate of %s for a period of %s months you will have to make monthly payments of $%s\n", fb.getInputValue(),fb.getRate(),fb.getTerm(),fb.getResult());
-                case 1 ->
-//                    resultString = "Future Value: If you invest " + fb.getInputValue() + " at an interest rate of " + fb.getRate() + " for a period of " + fb.getTerm() + " you will have " + fb.getResult() + " at the end of the term\n";
-                    resultString = String.format("Future Value: If you invest $%s at an interest rate of %s for a period of %s months you will have $%s at the end of the term\n", fb.getInputValue(),fb.getRate(),fb.getTerm(),fb.getResult());
-                case 2 ->
-//                    resultString = "Savings Goal: If you wish to save " + fb.getInputValue() + " at an interest rate of " + fb.getRate() + " over a period of " + fb.getTerm() + " you will have need to save" + fb.getResult() + " monthly\n";
-                    resultString = String.format("Savings Goal: If you wish to save $%s at an interest rate of %s over a period of %s months you will have need to save $%s monthly\n", fb.getInputValue(),fb.getRate(),fb.getTerm(),fb.getResult());
-            }
+        switch (calculationType) {
+            case 0 ->
+                resultString = String.format("Loan: If you borrow $%s at an interest rate of %s for a period of %s months you will have to make monthly payments of $%s\n", financeBean.getInputValue(), financeBean.getRate(), financeBean.getTerm(), financeBean.getResult());
+            case 1 ->
+                resultString = String.format("Future Value: If you invest $%s at an interest rate of %s for a period of %s months you will have $%s at the end of the term\n", financeBean.getInputValue(), financeBean.getRate(), financeBean.getTerm(), financeBean.getResult());
+            case 2 ->
+                resultString = String.format("Savings Goal: If you wish to save $%s at an interest rate of %s over a period of %s months you will have need to save $%s monthly\n", financeBean.getInputValue(), financeBean.getRate(), financeBean.getTerm(), financeBean.getResult());
+        }
         return resultString;
     }
 
@@ -307,15 +364,15 @@ public class FinancePane extends BorderPane {
      * Display an Alert box if there is a NumberFormatException detected in the
      * calculateButtonHandler
      *
-     * @param badValue
-     * @param textField
+     * @param badValue The mistake
+     * @param textField The field the mistake was made in
      */
     private void numberFormatAlert(String badValue, String textField) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Number Format Error");
         alert.setHeaderText("The value \"" + badValue + "\" cannot be converted to a number for the " + textField);
         alert.setContentText("Number Format Error");
-
+        // Display a modal dialog window that disables the application until you click on OK
         alert.showAndWait();
     }
 
@@ -328,5 +385,4 @@ public class FinancePane extends BorderPane {
         termValue.setText("");
         resultValue.setText("");
     }
-
 }

@@ -4,7 +4,8 @@ import java.math.BigDecimal;
 
 /**
  * This bean class represents the input data for solving the three finance
- * calculations and the output data with the result.
+ * calculations and the output data with the result. It is unchanged in the
+ * JavaFX version.
  *
  * @author Ken Fogel
  * @version 1.0

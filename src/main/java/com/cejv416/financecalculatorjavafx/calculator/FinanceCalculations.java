@@ -6,7 +6,8 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 
 /**
- * This class contains the three calculations
+ * This class contains the three calculations. This method is unchanged from the
+ * console version of this program
  *
  * @author Ken Fogel
  * @version 1.0
@@ -16,8 +17,9 @@ public class FinanceCalculations {
     /**
      * The Loan calculation
      *
-     * @param money
-     * @throws ArithmeticException
+     * @param money A FinanceBean
+     * @throws ArithmeticException If a string cannot be converted to a
+     * BigDecimal it throws this exception
      */
     public void loanCalculation(FinanceBean money) throws ArithmeticException {
 
@@ -54,8 +56,9 @@ public class FinanceCalculations {
     /**
      * The Future Value calculation
      *
-     * @param money
-     * @throws ArithmeticException
+     * @param money A FinanceBean
+     * @throws ArithmeticException If a string cannot be converted to a
+     * BigDecimal it throws this exception
      */
     public void futureValueCalculation(FinanceBean money) throws ArithmeticException {
         // Divide APR by 12
@@ -88,8 +91,9 @@ public class FinanceCalculations {
     /**
      * The Savings Goal calculation
      *
-     * @param money
-     * @throws ArithmeticException
+     * @param money A FinanceBean
+     * @throws ArithmeticException If a string cannot be converted to a
+     * BigDecimal it throws this exception
      */
     public void savingsGoalCalculation(FinanceBean money) throws ArithmeticException {
         // Divide APR by 12
